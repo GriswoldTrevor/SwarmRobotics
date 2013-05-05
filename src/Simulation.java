@@ -7,39 +7,39 @@ public class Simulation {
 	public static final int MAX_Y = 30;
 	
 	public int stepCount = 0;
-	private ArrayList<SwarmRobot> robots;
+	private ArrayList<SimObject> simObjects;
 	
 	public Simulation() {
-		robots = new ArrayList<SwarmRobot>();
+		simObjects = new ArrayList<SimObject>();
 		
 	}
 	public Simulation(int numBots) {
 		/*
 		SwarmRobot r;
 		r = new SwarmRobot(15, 5, 0, this);
-		robots.add(r);
+		simObjects.add(r);
 		r.special=true; 
 		*/
 		
 		/* Direction Test
-		robots.add(new SwarmRobot(5, 5, 90, this));
-		robots.add(new SwarmRobot(10, 5, -90, this));
-		robots.add(new SwarmRobot(15, 5, 0, this));
-		robots.add(new SwarmRobot(15, 10, 180, this));
-		robots.add(new SwarmRobot(20, 5, 45, this));
-		robots.add(new SwarmRobot(25, 10, -135, this));
-		robots.add(new SwarmRobot(30, 10, 135, this));
-		robots.add(new SwarmRobot(35, 5, -45, this));
+		simObjects.add(new SwarmRobot(5, 5, 90, this));
+		simObjects.add(new SwarmRobot(10, 5, -90, this));
+		simObjects.add(new SwarmRobot(15, 5, 0, this));
+		simObjects.add(new SwarmRobot(15, 10, 180, this));
+		simObjects.add(new SwarmRobot(20, 5, 45, this));
+		simObjects.add(new SwarmRobot(25, 10, -135, this));
+		simObjects.add(new SwarmRobot(30, 10, 135, this));
+		simObjects.add(new SwarmRobot(35, 5, -45, this));
 		*/
 		
 		/* Crash Test
-		robots.add(new SwarmRobot(10, 5, 0, this));
-		robots.add(new SwarmRobot(5, 10, 90, this));
-		robots.add(new SwarmRobot(10, 15, 180, this));
-		robots.add(new SwarmRobot(15, 10, 270, this));
+		simObjects.add(new SwarmRobot(10, 5, 0, this));
+		simObjects.add(new SwarmRobot(5, 10, 90, this));
+		simObjects.add(new SwarmRobot(10, 15, 180, this));
+		simObjects.add(new SwarmRobot(15, 10, 270, this));
 		*/
 		
-		robots = new ArrayList<SwarmRobot>();
+		simObjects = new ArrayList<SimObject>();
 		int x, y, rotation;
 		for (int i = 0; i < numBots; i++) {
 			do {
@@ -48,7 +48,7 @@ public class Simulation {
 			} while (tooClose(x,y,1));
 			rotation = Util.random.nextInt(360);
 			
-			robots.add(new SwarmRobot(x, y, rotation, this));
+			simObjects.add(new SwarmRobot(x, y, rotation, this));
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class Simulation {
 		if (tooCloseToEdge(x,y,distance)) {
 			return true;
 		}
-		for (SwarmRobot r: robots) {
+		for (SimObject r: simObjects) {
 			double xDif = r.getX() - x;
 			double yDif = r.getY() - y;
 			double distanceBetween = Math.sqrt(Math.pow(xDif,2) + Math.pow(yDif,2));
@@ -86,7 +86,7 @@ public class Simulation {
 				return true;
 			}
 		}
-		for (SwarmRobot r: robots) {
+		for (SimObject r: simObjects) {
 			if (r != thisR) {
 				double xDif = r.getX() - x;
 				double yDif = r.getY() - y;
@@ -107,11 +107,11 @@ public class Simulation {
 	
 	public void step() {
 		stepCount++;
-		for (SwarmRobot robot: robots) {
-			robot.act();
+		for (SimObject simObject: simObjects) {
+			simObject.act();
 		}
 	}
-	public ArrayList<SwarmRobot> getRobots() {
-		return robots;
+	public ArrayList<SimObject> getObjects() {
+		return simObjects;
 	}
 }

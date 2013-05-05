@@ -23,8 +23,12 @@ public class GUICanvas extends JPanel {
     	g.fillRect(0, 0, Simulation.MAX_X*SCALE_FACTOR, Simulation.MAX_Y*SCALE_FACTOR);
     	
     	g.setColor(Color.black);
-        for(SwarmRobot robot: sim.getRobots()) {
-            drawRobot(robot, g);
+        for(SimObject simObject: sim.getObjects()) {
+        	if (simObject instanceof SwarmRobot) {
+                drawRobot((SwarmRobot)simObject, g);
+        	} else {
+        		System.out.println("Cannot draw unknown SimObject"+simObject);
+        	}
         }
     }
     
