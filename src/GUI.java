@@ -8,7 +8,7 @@ import javax.swing.WindowConstants;
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
 	private static final String TITLE = "Swarm Robotics";
-	public static int runDelay = 50;
+	public int runDelay = 50;
 
 	private Container container;
     @SuppressWarnings("unused")
