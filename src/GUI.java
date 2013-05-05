@@ -1,46 +1,60 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.LayoutManager;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+@SuppressWarnings("serial")
 public class GUI extends JFrame {
 	private static final String TITLE = "Swarm Robotics";
+	public static int runDelay = 50;
 
 	private Container container;
-    private LayoutManager layout;
+    @SuppressWarnings("unused")
+	private LayoutManager layout;
     
     private Toolbar toolbar;
     private Simulation sim;
+    private GUICanvas canvas;
 	
 	private static final int gapH = 3;
     private static final int gapV = 3;
     
     private Thread  thread;
     private boolean running;
+    
+    private int currentNumRobots;
 	
     public GUI() {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle(TITLE);
-        
-        sim = new Simulation();
+        currentNumRobots = 1;
+        sim = new Simulation(currentNumRobots);
         toolbar = new Toolbar(this);
         
         layout = new BorderLayout(gapH, gapV);
         container = getContentPane();
 
         container.add(toolbar, BorderLayout.NORTH);
-        container.add(new GUICanvas(sim), BorderLayout.CENTER);
-
+        
+        canvas = new GUICanvas(sim);
+        container.add(canvas, BorderLayout.CENTER);
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle(TITLE+": Step "+sim.stepCount);
         setVisible(true);
 
         pack();
-        
-        startRun();
+    }
+    
+    public void restart() {
+    	endRun();
+    	sim = new Simulation(currentNumRobots);
+    	canvas.setSim(sim);
+    	redraw();
+    }
+    public void restart(int numRobots) {
+    	currentNumRobots = numRobots;
+    	restart();
     }
     
     public void toggleRunning() {
@@ -52,6 +66,7 @@ public class GUI extends JFrame {
     }
     
     public void redraw() {
+    	setTitle(TITLE+": Step "+sim.stepCount);
         repaint();
     }
 
@@ -89,8 +104,8 @@ public class GUI extends JFrame {
                 step();
                 stepTime = System.currentTimeMillis() - startTime;
 
-                if (stepTime < Settings.runDelay) {
-                    Util.sleep((int) (Settings.runDelay - stepTime));
+                if (stepTime < runDelay) {
+                    Util.sleep((int) (runDelay - stepTime));
                 }
             }
         }

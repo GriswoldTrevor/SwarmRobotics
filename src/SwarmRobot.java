@@ -1,43 +1,46 @@
 import java.util.ArrayList;
 
 public class SwarmRobot {
+	public static final double MOVE_SPEED = 0.1;
+	public static final double TURN_SPEED = 5;
+	public static final double ANGLE_OF_VIEW = 90;
+	public static final double SIGHT_DISTANCE = 1;
+	public static final double ROBOT_RADIUS = 0.5;
+	
+	private Simulation sim;
+	
 	private double x;
 	private double y;
 	private double angle;
 	private boolean successful;
+	public boolean special = false;
 	
-	private static double moveSpeed = 1;
-	private static double turnSpeed = 15;
-	
-	private boolean move = true;
-	
-	public SwarmRobot() {
-		init(0,0,90,false);
+	public SwarmRobot(Simulation sim) {
+		init(0,0,90,false, sim);
 	}
-	public SwarmRobot(double x, double y) {
-		init(x,y,90,false);
+	public SwarmRobot(double x, double y, Simulation sim) {
+		init(x,y,90,false, sim);
 	}
-	public SwarmRobot(double x, double y, double angle) {
-		init(x,y,angle,false);
+	public SwarmRobot(double x, double y, double angle, Simulation sim) {
+		init(x,y,angle,false, sim);
 	}
-	public SwarmRobot(double x, double y, double angle, boolean successful) {
-		init(x,y,angle,successful);
+	public SwarmRobot(double x, double y, double angle, boolean successful, Simulation sim) {
+		init(x,y,angle,successful, sim);
 	}
-	private void init(double x, double y, double angle, boolean successful) {
+	private void init(double x, double y, double angle, boolean successful, Simulation sim) {
 		this.x = x;
 		this.y = y;
-		this.angle = angle;
+		this.angle = Util.normalizeAngle(angle);
 		this.successful = successful;
+		this.sim = sim;
 	}
 	
 	public void act() {
-		if (move) {
+		if (!objectInFront()) {
 			moveForward();
 		} else {
 			spinRight();
 		}
-		move = !move;
-		
 	}
 	public boolean isSucessful() {
 		return successful;
@@ -56,18 +59,18 @@ public class SwarmRobot {
 	}
 	
 	private void moveForward() {
-		x = x + moveSpeed*Math.sin(angle*((2*Math.PI)/360));
-		y = y + moveSpeed*Math.cos(angle*((2*Math.PI)/360));
+		x = x + MOVE_SPEED*Math.sin(Math.toRadians(angle));
+		y = y + MOVE_SPEED*Math.cos(Math.toRadians(angle));
 	}
 	private void moveBackward() {
-		x = x - moveSpeed*Math.sin(angle*((2*Math.PI)/360));
-		y = y - moveSpeed*Math.cos(angle*((2*Math.PI)/360));
+		x = x - MOVE_SPEED*Math.sin(Math.toRadians(angle));
+		y = y - MOVE_SPEED*Math.cos(Math.toRadians(angle));
 	}
 	private void spinLeft() {
-		angle = (angle + turnSpeed)%360;
+		angle = Util.normalizeAngle(angle + TURN_SPEED);
 	}
 	private void spinRight() {
-		angle = (angle - turnSpeed)%360;
+		angle = Util.normalizeAngle(angle - TURN_SPEED);
 	}
 	
 	private void pivotForwardRight() {}
@@ -76,7 +79,7 @@ public class SwarmRobot {
 	private void pivotBackwardLeft() {}
 	
 	private boolean objectInFront() {
-		return false;
+		return sim.tooClose(x, y, SIGHT_DISTANCE, angle, ANGLE_OF_VIEW/2, this);
 	}
 	private boolean objectBelow() {
 		return false;
