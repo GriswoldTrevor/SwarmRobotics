@@ -1,9 +1,15 @@
+import java.awt.Rectangle;
+
 public abstract class SimObject {
 	protected Simulation sim;
 	
-	private double x;
-	private double y;
-	private double angle;
+	protected double x;
+	protected double y;
+	
+	public SimObject(int x, int y) {
+		setX(x);
+		setY(y);
+	}
 	
 	protected void setX(double x) {
 		this.x = x;
@@ -11,19 +17,14 @@ public abstract class SimObject {
 	protected void setY(double y) {
 		this.y = y;
 	}
-	protected void setAngle(double angle) {
-		this.angle = Util.normalizeAngle(angle);
+	
+	public int getX() {
+		return (int)x;
+	}
+	public int getY() {
+		return (int)y;
 	}
 	
-	public double getX() {
-		return x;
-	}
-	public double getY() {
-		return y;
-	}
-	public double getAngle() {
-		return angle;
-	}
-	
+	public abstract Rectangle getShape();
 	public abstract void act();
 }
