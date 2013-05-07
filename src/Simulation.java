@@ -18,7 +18,7 @@ public class Simulation {
 	
 	public Simulation() {
 		init(true);
-		simObjects.add(new Wall(10,10,1,1));
+		simObjects.add(new Barrier(10,10,1,1));
 	}
 	public Simulation(int numBots, boolean cooperate) {
 		init(cooperate);
@@ -49,10 +49,10 @@ public class Simulation {
 		*/
 		
 		
-		simObjects.add(new Wall(200,200,20,200));
-		simObjects.add(new Wall(200,400,200,20));
-		simObjects.add(new Wall(500,100,20,200));
-		simObjects.add(new Wall(200,400,200,20));
+		simObjects.add(new Barrier(200,200,20,200));
+		simObjects.add(new Barrier(200,400,200,20));
+		simObjects.add(new Barrier(500,100,20,200));
+		simObjects.add(new Barrier(200,400,200,20));
 		simObjects.add(new Goal(170,260));
 		
 		int x, y, rotation;
@@ -69,10 +69,10 @@ public class Simulation {
 	}
 	private void init(boolean cooperate) {		
 		simObjects = new ArrayList<SimObject>();
-		simObjects.add(new Wall(MAX_X/2, MIN_Y+EDGE_THICKNESS/2, MAX_X, EDGE_THICKNESS));
-		simObjects.add(new Wall(MIN_X+EDGE_THICKNESS/2, MAX_Y/2, EDGE_THICKNESS, MAX_Y));
-		simObjects.add(new Wall(MAX_X/2, MAX_Y-EDGE_THICKNESS/2, MAX_X, EDGE_THICKNESS));
-		simObjects.add(new Wall(MAX_X-EDGE_THICKNESS/2, MAX_Y/2, EDGE_THICKNESS, MAX_Y));
+		simObjects.add(new Barrier(MAX_X/2, MIN_Y+EDGE_THICKNESS/2, MAX_X, EDGE_THICKNESS));
+		simObjects.add(new Barrier(MIN_X+EDGE_THICKNESS/2, MAX_Y/2, EDGE_THICKNESS, MAX_Y));
+		simObjects.add(new Barrier(MAX_X/2, MAX_Y-EDGE_THICKNESS/2, MAX_X, EDGE_THICKNESS));
+		simObjects.add(new Barrier(MAX_X-EDGE_THICKNESS/2, MAX_Y/2, EDGE_THICKNESS, MAX_Y));
 		
 		this.cooperate = cooperate;
 	}

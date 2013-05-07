@@ -1,18 +1,18 @@
 import java.awt.Rectangle;
 
-public class Wall extends SimObject {
+public class Barrier extends SimObject {
 	private int width;
 	private int height;
 	
-	public Wall(int x, int y) {
+	public Barrier(int x, int y) {
 		super(x, y);
 		init(0, 1, 1);
 	}
-	public Wall(int x, int y, int width, int height) {
+	public Barrier(int x, int y, int width, int height) {
 		super(x, y);
 		init(0, width, height);
 	}
-	public Wall(int x, int y, int width, int height, double angle) {
+	public Barrier(int x, int y, int width, int height, double angle) {
 		super(x, y);
 		init(angle, width, height);
 	}

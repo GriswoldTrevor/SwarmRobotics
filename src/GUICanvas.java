@@ -25,8 +25,8 @@ public class GUICanvas extends JPanel {
         for(SimObject simObject: sim.getObjects()) {
         	if (simObject instanceof SwarmRobot) {
                 drawRobot((SwarmRobot)simObject, g);
-        	} else if (simObject instanceof Wall) {
-        		drawWall((Wall)simObject, g);
+        	} else if (simObject instanceof Barrier) {
+        		drawWall((Barrier)simObject, g);
         	} else if (simObject instanceof Goal) {
         		drawGoal((Goal)simObject, g);
         	} else {
@@ -53,7 +53,7 @@ public class GUICanvas extends JPanel {
     	g.drawPolygon(robot.getFrontSensorView());
     }
     
-    private void drawWall(Wall wall, Graphics g) {
+    private void drawWall(Barrier wall, Graphics g) {
         int centerX = wall.getX();
         int centerY = wall.getY();
         int width = wall.getWidth();
