@@ -10,19 +10,24 @@ public class Toolbar extends JPanel {
 
     private JButton buttonStep;
     private JButton buttonPlay;
-    private JButton buttonRestart;
     
     private JPanel seperator;
     
     private JLabel labelNumRobots;
     private JSpinner spinnerNumRobots;
-    private JButton buttonSetNumRobots;
+    private JButton buttonRestart;
     
     private JPanel seperator2;
     
     private JLabel labelRunDelay;
     private JSpinner spinnerRunDelay;
     private JButton buttonSetRunDelay;
+
+    private JPanel seperator3;
+    
+    private JLabel labelCooperate;
+    private JCheckBox checkboxCooperate;
+    private JButton buttonSetCooperate;
 
     private GUI gui;
 
@@ -31,49 +36,61 @@ public class Toolbar extends JPanel {
 
         buttonStep = Util.clickableButton("Step", new StepAction());
         buttonPlay = Util.clickableButton("Play/Pause", new PlayAction());
-        buttonRestart = Util.clickableButton("Restart", new RestartAction());
         
         seperator = new JPanel();
-        seperator.setPreferredSize(new Dimension(50, 25));
+        seperator.setPreferredSize(new Dimension(20, 25));
         
-        labelRunDelay = new JLabel("Run Delay");
+        labelNumRobots = new JLabel("Robots:");
+        spinnerNumRobots = new JSpinner(new SpinnerNumberModel(1, 1, 50, 1));
+        buttonRestart = Util.clickableButton("Restart", new RestartAction());
+        
+        seperator2 = new JPanel();
+        seperator2.setPreferredSize(new Dimension(20, 25));
+        
+        labelRunDelay = new JLabel("Run Delay:");
         spinnerRunDelay = new JSpinner(new SpinnerNumberModel(gui.runDelay, 0, 100, 1));
         buttonSetRunDelay = Util.clickableButton("Set", new SetRunDelayAction());
         
-        seperator2 = new JPanel();
-        seperator2.setPreferredSize(new Dimension(50, 25));
+        seperator3 = new JPanel();
+        seperator3.setPreferredSize(new Dimension(20, 25));
         
-        labelNumRobots = new JLabel("Number of Robots");
-        spinnerNumRobots = new JSpinner(new SpinnerNumberModel(1, 1, 25, 1));
-        buttonSetNumRobots = Util.clickableButton("Set", new SetNumRobotsAction());
+        labelCooperate = new JLabel("Cooperation:");
+        checkboxCooperate = new JCheckBox();
+        checkboxCooperate.setSelected(gui.getCooperate());
+        buttonSetCooperate = Util.clickableButton("Set", new SetCooperateAction());
         
         add(buttonStep);
         add(buttonPlay);
-        add(buttonRestart);
         
         add(seperator);
+        
+        add(labelNumRobots);
+        add(spinnerNumRobots);
+        add(buttonRestart);
+        
+        add(seperator2);
         
         add(labelRunDelay);
         add(spinnerRunDelay);
         add(buttonSetRunDelay);
         
-        add(seperator2);
+        add(seperator3);
         
-        add(labelNumRobots);
-        add(spinnerNumRobots);
-        add(buttonSetNumRobots);
+        add(labelCooperate);
+        add(checkboxCooperate);
+        add(buttonSetCooperate);
         
+    }
+    
+    private class SetCooperateAction implements ActionListener {
+    	public void actionPerformed(ActionEvent e) {
+        	gui.setCooperate(checkboxCooperate.isSelected());
+        }
     }
     
     private class RestartAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-        	gui.restart();
-        }
-    }
-    
-    private class SetNumRobotsAction implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-        	gui.restart((int)spinnerNumRobots.getValue());
+        	gui.restart((int)spinnerNumRobots.getValue(), checkboxCooperate.isSelected());
         }
     }
     

@@ -38,15 +38,19 @@ public class GUICanvas extends JPanel {
     private void drawRobot(SwarmRobot robot, Graphics g) {
         int x = robot.getX();
         int y = robot.getY();
-        double angle = robot.getAngle();
+        //double angle = robot.getAngle();
         
-        g.setColor(Color.red);
+        
         if(robot.isSucessful()){
         	g.setColor(Color.green);
+        } else if (robot.hasDesiredAngle()) {
+        	g.setColor(Color.yellow);
+        } else {
+        	g.setColor(Color.red);
         }
-        g.fillRect(x-SwarmRobot.ROBOT_RADIUS, y-SwarmRobot.ROBOT_RADIUS, SwarmRobot.ROBOT_RADIUS*2, SwarmRobot.ROBOT_RADIUS*2);
-        //g.fillOval(x-SwarmRobot.ROBOT_RADIUS, y-SwarmRobot.ROBOT_RADIUS, SwarmRobot.ROBOT_RADIUS*2, SwarmRobot.ROBOT_RADIUS*2);
-    	g.drawPolygon(robot.getPolygonView());
+        g.fillRect(x-SwarmRobot.RADIUS, y-SwarmRobot.RADIUS, SwarmRobot.RADIUS*2, SwarmRobot.RADIUS*2);
+        //g.fillOval(x-SwarmRobot.RADIUS, y-SwarmRobot.RADIUS, SwarmRobot.RADIUS*2, SwarmRobot.RADIUS*2);
+    	g.drawPolygon(robot.getFrontSensorView());
     }
     
     private void drawWall(Wall wall, Graphics g) {

@@ -8,17 +8,20 @@ public class Simulation {
 	public static final int MIN_Y = 0;
 	public static final int MAX_X = 800;
 	public static final int MAX_Y = 600;
+	public static final int EDGE_THICKNESS = 4;
 	
 	public int stepCount = 0;
+	
+	private boolean cooperate;
+	private int stepLastSoundMade = -1;
 	private ArrayList<SimObject> simObjects;
-	private ArrayList<Rectangle> edges;
 	
 	public Simulation() {
-		init();
+		init(true);
 		simObjects.add(new Wall(10,10,1,1));
 	}
-	public Simulation(int numBots) {
-		init();
+	public Simulation(int numBots, boolean cooperate) {
+		init(cooperate);
 		
 		/*
 		SwarmRobot r;
@@ -57,33 +60,38 @@ public class Simulation {
 			do {
 				x = Util.random.nextInt(701)+50;
 				y = Util.random.nextInt(501)+50;
-			} while (isOverlapping(x,y,SwarmRobot.ROBOT_RADIUS*2,SwarmRobot.ROBOT_RADIUS*2));
+			} while (isOverlapping(x,y,SwarmRobot.RADIUS*2,SwarmRobot.RADIUS*2));
 			rotation = Util.random.nextInt(360);
 			
 			simObjects.add(new SwarmRobot(x, y, rotation, this));
 		}
 		
 	}
-	private void init() {
-		edges = new ArrayList<Rectangle>();
-		edges.add(new Rectangle(MIN_X-1, MIN_Y, 1, MAX_Y));
-		edges.add(new Rectangle(MIN_X, MIN_Y-1, MAX_X, 1));
-		edges.add(new Rectangle(MIN_X, MAX_Y, MAX_X, 1));
-		edges.add(new Rectangle(MAX_X, MIN_Y, 1, MAX_Y));
-		
+	private void init(boolean cooperate) {		
 		simObjects = new ArrayList<SimObject>();
+		simObjects.add(new Wall(MAX_X/2, MIN_Y+EDGE_THICKNESS/2, MAX_X, EDGE_THICKNESS));
+		simObjects.add(new Wall(MIN_X+EDGE_THICKNESS/2, MAX_Y/2, EDGE_THICKNESS, MAX_Y));
+		simObjects.add(new Wall(MAX_X/2, MAX_Y-EDGE_THICKNESS/2, MAX_X, EDGE_THICKNESS));
+		simObjects.add(new Wall(MAX_X-EDGE_THICKNESS/2, MAX_Y/2, EDGE_THICKNESS, MAX_Y));
+		
+		this.cooperate = cooperate;
+	}
+	
+	public void setCooperate(boolean val){
+		if(val){
+			System.out.println("Now cooperating");
+		} else {
+			System.out.println("No longer cooperating");
+		}
+		cooperate = val;
+	}
+	public boolean getCooperate(){
+		return cooperate;
 	}
 	
 	public boolean isOverlapping(int x, int y, int width, int height){
 		Area area = new Area(new Rectangle(x-width/2, y-height/2, width, height));
-		
-		//Check if tooClose to edges
-		for (Rectangle edge: edges) {
-			if (area.intersects(edge)){
-				return true;
-			}
-		}
-		
+
 		//Check if tooClose to other objects
 		for (SimObject o: simObjects) {
 			if (area.intersects(o.getShape())){
@@ -93,34 +101,22 @@ public class Simulation {
 		return false;
 	}
 	
-	public boolean tooCloseToEdge(SwarmRobot r) {
-		Area area = new Area(r.getPolygonView());
-		
-		//Check if tooClose to edges
-		for (Rectangle edge: edges) {
-			if (area.intersects(edge)){
-				return true;
-			}
-		}
-		return false;
+	public void makeSound(){
+		stepLastSoundMade= stepCount +1;
 	}
-	public boolean tooClose(SwarmRobot r){
-		if (tooCloseToEdge(r)){
-			return true;
-		}
-		return !ObjectsInRange(r).isEmpty();
+	public boolean checkSound(){
+		return stepLastSoundMade == stepCount;
 	}
-	public ArrayList<SimObject> ObjectsInRange(SwarmRobot r){
+	
+	public ArrayList<SimObject> ObjectsInRange(Polygon p){
 		ArrayList<SimObject> inRange = new ArrayList<SimObject>();
 		
-		Area area = new Area(r.getPolygonView());
+		Area area = new Area(p);
 		
 		//Check if tooClose to other objects
 		for (SimObject o: simObjects) {
-			if (o != r) {
-				if (area.intersects(o.getShape())){
-					inRange.add(o);
-				}
+			if (area.intersects(o.getShape()) || area.contains(o.getShape())){
+				inRange.add(o);
 			}
 		}
 		return inRange;
@@ -131,6 +127,15 @@ public class Simulation {
 		for (SimObject simObject: simObjects) {
 			simObject.act();
 		}
+	}
+	public boolean isDone() {
+		boolean successfulSoFar = true;
+		for (SimObject simObject: simObjects) {
+			if (successfulSoFar && (simObject instanceof SwarmRobot)){
+				successfulSoFar = successfulSoFar && ((SwarmRobot) simObject).isSucessful();
+			}
+		}
+		return successfulSoFar;
 	}
 	public ArrayList<SimObject> getObjects() {
 		return simObjects;

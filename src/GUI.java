@@ -8,7 +8,7 @@ import javax.swing.WindowConstants;
 @SuppressWarnings("serial")
 public class GUI extends JFrame {
 	private static final String TITLE = "Swarm Robotics";
-	public int runDelay = 50;
+	public int runDelay = 25;
 
 	private Container container;
     @SuppressWarnings("unused")
@@ -28,7 +28,7 @@ public class GUI extends JFrame {
 	
     public GUI() {
         currentNumRobots = 1;
-        sim = new Simulation(currentNumRobots);
+        sim = new Simulation(currentNumRobots, true);
         toolbar = new Toolbar(this);
         
         layout = new BorderLayout(gapH, gapV);
@@ -46,15 +46,12 @@ public class GUI extends JFrame {
         pack();
     }
     
-    public void restart() {
+    public void restart(int numRobots, boolean cooperate) {
     	endRun();
-    	sim = new Simulation(currentNumRobots);
+    	currentNumRobots = numRobots;
+    	sim = new Simulation(currentNumRobots, cooperate);
     	canvas.setSim(sim);
     	redraw();
-    }
-    public void restart(int numRobots) {
-    	currentNumRobots = numRobots;
-    	restart();
     }
     
     public void toggleRunning() {
@@ -63,6 +60,12 @@ public class GUI extends JFrame {
         } else {
         	startRun();
         }
+    }
+    public void setCooperate(boolean val){
+    	sim.setCooperate(val);
+    }
+    public boolean getCooperate() {
+    	return sim.getCooperate();
     }
     
     public void redraw() {
@@ -90,18 +93,20 @@ public class GUI extends JFrame {
         }
     }
     public void step() {
-        sim.step();
-        redraw();
+    	if (!sim.isDone()) {
+    		sim.step();
+            redraw();
+    	}
     }
     
     private class RunnerThread extends Thread {
         public void run() {
             long startTime;
             long stepTime;
-
             while (running) {
                 startTime = System.currentTimeMillis();
                 step();
+                
                 stepTime = System.currentTimeMillis() - startTime;
 
                 if (stepTime < runDelay) {
